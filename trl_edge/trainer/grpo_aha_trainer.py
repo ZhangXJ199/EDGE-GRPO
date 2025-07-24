@@ -355,9 +355,9 @@ class GRPOAhaTrainer(Trainer):
         self.reward_processing_classes = reward_processing_classes
 
         # Training arguments
-        self.get_entropy = args.get_entropy
-        self.force_aha = args.force_aha
-        self.give_answer_aha = args.give_answer_aha
+        self.EDA = args.EDA
+        self.force_reflection = args.force_reflection
+        self.GEC = args.GEC
         self.max_prompt_length = args.max_prompt_length
         self.max_completion_length = args.max_completion_length  # = |o_i| in the GRPO paper
         self.num_generations = args.num_generations  # = G in the GRPO paper
@@ -655,11 +655,11 @@ class GRPOAhaTrainer(Trainer):
 
     # Get the per-token log probabilities for the completions for the model and the reference model
     @profiling_decorator
-    def _get_per_token_logps(self, model, input_ids, attention_mask, logits_to_keep, get_entropy=False, batch_size=None) -> torch.Tensor:
+    def _get_per_token_logps(self, model, input_ids, attention_mask, logits_to_keep, EDA=False, batch_size=None) -> torch.Tensor:
         print("input_ids in _get_per_token_logps:",input_ids.shape)
         batch_size = batch_size or input_ids.size(0)  # Chunk inputs into smaller batches to reduce memory peak
         all_logps = []
-        all_entropies = [] if get_entropy else None
+        all_entropies = [] if EDA else None
         for i in range(0, input_ids.size(0), batch_size):
             input_ids_batch = input_ids[i : i + batch_size]
             attention_mask_batch = attention_mask[i : i + batch_size]
@@ -674,15 +674,15 @@ class GRPOAhaTrainer(Trainer):
             logps = selective_log_softmax(logits, input_ids_batch)  # compute logprobs for the input tokens
             all_logps.append(logps)
 
-            if get_entropy:
-                log_probs = torch.log_softmax(logits, dim=-1)#.detach()
-                probs = torch.softmax(logits, dim=-1)#.detach()
-                token_entropies_tensor = -(probs * log_probs).sum(dim=-1)#.detach()
+            if EDA:
+                log_probs = torch.log_softmax(logits, dim=-1)
+                probs = torch.softmax(logits, dim=-1)
+                token_entropies_tensor = -(probs * log_probs).sum(dim=-1)
                 all_entropies.append(token_entropies_tensor)
 
         logps = torch.cat(all_logps, dim=0)
-        if get_entropy:
-            entropies = torch.cat(all_entropies, dim=0)#.detach()
+        if EDA:
+            entropies = torch.cat(all_entropies, dim=0)
             print("entropies:",entropies.shape)
             return logps, entropies
         else:
@@ -979,7 +979,7 @@ class GRPOAhaTrainer(Trainer):
 
         ###########################################################################
         with torch.no_grad():
-            if self.force_aha:
+            if self.force_reflection or self.GEC:
                 rewards_per_func = self.first_calculate_rewards(inputs, prompts, completions, completion_ids_list)
                 rewards = (rewards_per_func * self.reward_weights.to(device).unsqueeze(0)).nansum(dim=1)
                 print("rewards:",rewards)
@@ -993,7 +993,7 @@ class GRPOAhaTrainer(Trainer):
                     for idx in range(num_gen):
                         if idx in regenerate_indices:
                             aha_begin = " Wait! Something is wrong here."
-                            if self.give_answer_aha:
+                            if self.GEC:
                                 selected = random.choice([aha_begin, "give_answer_directly"])
                                 if selected == aha_begin:
                                     completions_text[idx] = completions_text[idx] + aha_begin
@@ -1225,16 +1225,8 @@ class GRPOAhaTrainer(Trainer):
         logits_to_keep = completion_ids.size(1)  # we only need to compute the logits for the completion tokens
 
         mode = "train" if self.model.training else "eval"
-
-        """
-        if self.get_entropy:
-            per_token_logps, per_entropy = self._get_per_token_logps(model, input_ids, attention_mask, logits_to_keep, get_entropy=self.get_entropy)
-        else:
-            per_token_logps = self._get_per_token_logps(model, input_ids, attention_mask, logits_to_keep, get_entropy=self.get_entropy)
-        print("_compute_loss per_token_logps:",per_token_logps.shape)
-        """
         
-        per_token_logps, per_entropy = self._get_per_token_logps(model, input_ids, attention_mask, logits_to_keep, get_entropy=True)
+        per_token_logps, per_entropy = self._get_per_token_logps(model, input_ids, attention_mask, logits_to_keep, EDA=True)
         print("_compute_loss per_token_logps:",per_token_logps.shape)
         print("per_entropy.requires_grad:",per_entropy.requires_grad)
 
@@ -1251,11 +1243,10 @@ class GRPOAhaTrainer(Trainer):
                 torch.exp(ref_per_token_logps - per_token_logps) - (ref_per_token_logps - per_token_logps) - 1
             )
 
-        #advantages = inputs["advantages"]
-        if self.get_entropy:
-            #advantages = inputs["advantages"] / per_entropy_mean * all_entropy_mean.mean(dim=0)
-            scale_entropy = torch.clamp(per_entropy_mean / all_entropy_mean.mean(dim=0), min=0.1, max=10)
-            advantages = inputs["advantages"] / scale_entropy
+        if self.EDA:
+            advantages = inputs["advantages"] / per_entropy_mean * all_entropy_mean.mean(dim=0)
+            #scale_entropy = torch.clamp(per_entropy_mean / all_entropy_mean.mean(dim=0), min=0.1, max=10)
+            #advantages = inputs["advantages"] / scale_entropy
         else:
             advantages = inputs["advantages"]
         
@@ -1277,9 +1268,6 @@ class GRPOAhaTrainer(Trainer):
         per_token_loss1 = coef_1 * advantages.unsqueeze(1)
         per_token_loss2 = coef_2 * advantages.unsqueeze(1)
         per_token_loss = -torch.min(per_token_loss1, per_token_loss2)
-
-        #if self.get_entropy:
-        #    per_token_loss = per_token_loss / per_entropy
 
         if self.beta != 0.0:
             per_token_loss = per_token_loss + self.beta * per_token_kl

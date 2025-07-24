@@ -1,0 +1,10 @@
+deepspeed==0.16.7
+math-verify==0.7.0
+numpy==1.26.4
+tokenizers==0.21.1
+torch==2.5.1
+torchaudio==2.5.1
+torchvision==0.20.1
+transformers==4.52.4
+trl==0.19.0
+vllm==0.7.2

@@ -390,22 +390,22 @@ class GRPOConfig(TrainingArguments):
         },
     )
     
-    force_aha: Optional[bool] = field(
+    force_reflection: Optional[bool] = field(
         default=False,
         metadata={
-            "help": "Whether force to aha"
+            "help": "Whether force to reflection"
         },
     )
-    give_answer_aha: Optional[bool] = field(
+    GEC: Optional[bool] = field(
         default=False,
         metadata={
-            "help": "Whether force to aha"
+            "help": "Whether introduce guided error correction"
         },
     )
-    get_entropy: Optional[bool] = field(
+    EDA: Optional[bool] = field(
         default=False,
         metadata={
-            "help": "Whether force to aha"
+            "help": "Whether compute entropy-driven advantage"
         },
     )
 
