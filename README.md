@@ -53,4 +53,4 @@ If you have any questions or suggestions, please feel free to contact us at ``zh
 ## ❤️ Community efforts
 
 * This repository is based on [trl](https://github.com/huggingface/trl) project.
-* The implementation of evaluation refers to the [Dr. GRPO](https://github.com/sail-sg/understand-r1-zero) project. Great work!
+* The implementation of evaluation refers to the [understand-r1-zero](https://github.com/sail-sg/understand-r1-zero) project. Great work!
