@@ -45,8 +45,20 @@ Large Language Models (LLMs) have made remarkable progress in enhancing step-by-
 
 The model we provided after training: [EDGE-GRPO-Qwen-7B](https://huggingface.co/Zhang199/EDGE-GRPO-Qwen-7B), [EDGE-GRPO-Qwen-1.5B](https://huggingface.co/Zhang199/EDGE-GRPO-Qwen-1.5B)
 
+
 ## 📊 Results
 
+Performance comparison of different methods on three benchmarks during training steps. Our method consistently outperforms the vanilla GRPO and the variant with forced reflection throughout the training process.
+
+<div align="center">
+<img src="figure/comparison_during_training.png" alt="framework" width="100%" height="auto">
+</div>
+
+Pass@1 performance comparison across various mathematical evaluation benchmarks. The results below are from 1 epoch of training on DeepScaleR-Random-1K. The number of samples in each benchmark is indicated in parentheses. The results are evaluated under the setting of temperature = 0.1. The best results are indicated by **boldface**.
+
+<div align="center">
+<img src="figure/main_result.jpg" alt="framework" width="90%" height="auto">
+</div>
 
 ## 📝 Citation
 
