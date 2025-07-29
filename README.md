@@ -60,6 +60,12 @@ Pass@1 performance comparison across various mathematical evaluation benchmarks.
 <img src="figure/main_result.jpg" alt="framework" width="90%" height="auto">
 </div>
 
+## <img id="painting_icon" width="3%" src="https://cdn-icons-png.flaticon.com/256/3557/3557963.png">Changes in Entropy and Advantage Variance During Training
+
+<div align="center">
+<img src="figure/changes.png" alt="framework" width="100%" height="auto">
+</div>
+
 ## 📝 Citation
 
 
