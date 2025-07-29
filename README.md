@@ -48,5 +48,9 @@ The model we provided after training: [EDGE-GRPO-Qwen-7B](https://huggingface.co
 
 ## 📨 Contact
 
+If you have any questions or suggestions, please feel free to contact us at ``zhangxingjian@buaa.edu.cn``.
 
 ## ❤️ Community efforts
+
+* This repository is based on [trl](https://github.com/huggingface/trl) project.
+* The implementation of evaluation refers to the [Dr. GRPO](https://github.com/sail-sg/understand-r1-zero) project. Great work!
