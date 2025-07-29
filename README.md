@@ -26,6 +26,7 @@
 
 ## 📰 News
 
+- [2025-07] Our repository is being completed as soon as possible...
 
 ## <img id="painting_icon" width="3%" src="https://cdn-icons-png.flaticon.com/256/2435/2435606.png"> About
 
