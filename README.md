@@ -18,7 +18,7 @@
 <div align="center">
 
 [![arXiv](https://img.shields.io/badge/Arxiv-2507.21848-AD1C18.svg?logo=arXiv)](https://arxiv.org/abs/2507.21848)
-[![Huggingface](https://img.shields.io/badge/🤗-%20Open%20In%20HF-blue.svg)](https://github.com/ZhangXJ199/EDGE-GRPO)
+[![Huggingface](https://img.shields.io/badge/🤗-%20Open%20In%20HF-blue.svg)](https://huggingface.co/collections/Zhang199/edge-grpo-688974025917352b5e335752)
 [![GitHub issues](https://img.shields.io/github/issues/ZhangXJ199/EDGE-GRPO?color=critical&label=Issues)](https://github.com/ZhangXJ199/EDGE-GRPO)
 [![GitHub Stars](https://img.shields.io/github/stars/ZhangXJ199/EDGE-GRPO?style=social)](https://github.com/ZhangXJ199/EDGE-GRPO)
 
