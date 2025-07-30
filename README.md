@@ -81,6 +81,8 @@ Pass@1 performance comparison across various mathematical evaluation benchmarks.
 
 ## 📝 Citation
 
+If you find our work interesting and helpful, please consider giving our repo a star. Additionally, if you would like to cite our work, please use the following format:
+```bibtex
 @misc{zhang2025edgegrpoentropydrivengrpoguided,
       title={EDGE-GRPO: Entropy-Driven GRPO with Guided Error Correction for Advantage Diversity}, 
       author={Xingjian Zhang and Siwei Wen and Wenjun Wu and Lei Huang},
@@ -90,6 +92,7 @@ Pass@1 performance comparison across various mathematical evaluation benchmarks.
       primaryClass={cs.AI},
       url={https://arxiv.org/abs/2507.21848}, 
 }
+```
 
 ## 📨 Contact
 
