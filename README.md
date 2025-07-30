@@ -70,7 +70,7 @@ Performance comparison of different methods on three benchmarks during training 
 <img src="figure/comparison_during_training.png" alt="framework" width="100%" height="auto">
 </div>
 
-Pass@1 performance comparison across various mathematical evaluation benchmarks. The results below are from 1 epoch of training on DeepScaleR-Random-1K. The number of samples in each benchmark is indicated in parentheses. The results are evaluated under the setting of temperature = 0.1. The best results are indicated by **boldface**.
+Pass@1 performance comparison across various mathematical evaluation benchmarks. The results below are from 1 epoch of training on DeepScaleR-Hard-1K. The number of samples in each benchmark is indicated in parentheses. The results are evaluated under the setting of temperature = 0.1. The best results are indicated by **boldface**.
 
 <div align="center">
 <img src="figure/main_result.jpg" alt="framework" width="90%" height="auto">
