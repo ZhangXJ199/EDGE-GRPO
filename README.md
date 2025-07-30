@@ -26,7 +26,6 @@
 
 ## 📰 News
 
-- [2025-07] Our repository is being completed as soon as possible...
 - [2025-07] 🎉 Our arXiv paper [EDGE-GRPO](https://arxiv.org/abs/2507.21848) is released!
 
 ## <img id="painting_icon" width="3%" src="https://cdn-icons-png.flaticon.com/256/2435/2435606.png"> About
@@ -60,7 +59,17 @@ The model we provided after training: [EDGE-GRPO-Qwen-7B](https://huggingface.co
 
 ### Train
 
+Replace model paths and output_dir with yours in `train_grpo.sh`
+
+```bash
+bash train_grpo.sh
+```
+
 ### Evaluation
+
+```bash
+python evaluate_model.py --model_name YOUR_MODEL_PATH
+```
 
 ## 📊 Results
 
