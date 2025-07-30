@@ -27,7 +27,7 @@
 ## 📰 News
 
 - [2025-07] Our repository is being completed as soon as possible...
-- [2025-07] 🎉 Our arXiv paper [EDGE-GRPO: Entropy-Driven GRPO with Guided Error Correction for Advantage Diversity](https://arxiv.org/abs/2507.21848) is released!
+- [2025-07] 🎉 Our arXiv paper [EDGE-GRPO](https://arxiv.org/abs/2507.21848) is released!
 
 ## <img id="painting_icon" width="3%" src="https://cdn-icons-png.flaticon.com/256/2435/2435606.png"> About
 
