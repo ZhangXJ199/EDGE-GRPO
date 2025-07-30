@@ -78,6 +78,11 @@ Pass@1 performance comparison across various mathematical evaluation benchmarks.
 
 ## <img id="painting_icon" width="3%" src="https://cdn-icons-png.flaticon.com/256/3557/3557963.png">Changes in Entropy and Advantage Variance During Training
 
+This figure compares the training dynamics of three methods—Vanilla GRPO, GRPO + Forced Reflection, and EDGE-GRPO (Ours)—with respect to two key metrics:
+
+- **Left (Mean Entropy)**: Our method maintains consistently higher policy entropy during training, indicating stronger exploration ability and response diversity, which helps prevent premature convergence.
+
+- **Right (Advantages Variance)**: EDGE-GRPO significantly outperforms the baselines by preserving higher intra-group advantage variance, effectively mitigating the advantage collapse problem and providing more informative gradient signals.
 <div align="center">
 <img src="figure/changes.png" alt="framework" width="100%" height="auto">
 </div>
