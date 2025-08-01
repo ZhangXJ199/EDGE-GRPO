@@ -22,8 +22,8 @@ from typing import Optional
 from datasets import load_dataset
 from transformers import AutoModelForCausalLM, AutoModelForSequenceClassification, AutoTokenizer, AutoConfig
 
-from trl_ours import GRPOConfig, GRPOTrainer, GRPOAhaTrainer, ModelConfig, ScriptArguments, TrlParser, get_peft_config
-from trl_ours.rewards import think_format_reward, box_format_reward, think_accuracy_reward, box_accuracy_reward
+from trl_edge import GRPOConfig, GRPOTrainer, GRPOAhaTrainer, ModelConfig, ScriptArguments, TrlParser, get_peft_config
+from trl_edge.rewards import think_format_reward, box_format_reward, think_accuracy_reward, box_accuracy_reward
 
 
 reward_funcs_registry = {
