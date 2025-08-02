@@ -683,7 +683,6 @@ class GRPOAhaTrainer(Trainer):
         logps = torch.cat(all_logps, dim=0)
         if EDA:
             entropies = torch.cat(all_entropies, dim=0)
-            print("entropies:",entropies.shape)
             return logps, entropies
         else:
             return logps
@@ -922,8 +921,6 @@ class GRPOAhaTrainer(Trainer):
             #prompts_text = self.processing_class.batch_decode(
             #    prompt_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False
             #)
-            print("###prompt_ids:",prompt_ids.shape)
-            print("###prompt_mask:",prompt_mask.shape)
 
         # Generate completions using either vLLM or regular generation
         # Regular generation path
@@ -939,10 +936,9 @@ class GRPOAhaTrainer(Trainer):
         # Compute prompt length and extract completion ids
         num_gen = prompt_ids.size(0)
         prompt_length = prompt_ids.size(1)
-        print("prompt_length:",prompt_length)
+
         prompt_ids = prompt_completion_ids[:, :prompt_length] #[num_generations, prompt_length]
         completion_ids = prompt_completion_ids[:, prompt_length:] #[num_generations, max_completion_lengths]
-        print("###completion_ids:",completion_ids.shape)
 
         # Mask everything after the first EOS token
         is_eos = completion_ids == self.processing_class.eos_token_id
@@ -950,7 +946,6 @@ class GRPOAhaTrainer(Trainer):
         eos_idx[is_eos.any(dim=1)] = is_eos.int().argmax(dim=1)[is_eos.any(dim=1)]
         sequence_indices = torch.arange(is_eos.size(1), device=device).expand(is_eos.size(0), -1)
         completion_mask = (sequence_indices <= eos_idx.unsqueeze(1)).int() #[num_generations, max_completion_lengths]
-        print("###completion_mask:",completion_mask.shape)
 
         # Convert tensor to a list of lists of token IDs. This will be passed to the reward function, avoiding the need
         # to re-tokenize completions if the reward is computed from tokens.
@@ -964,7 +959,6 @@ class GRPOAhaTrainer(Trainer):
         attention_mask = torch.cat([prompt_mask, completion_mask], dim=1)  # [num_generations, prompt_length + max_completion_lengths]
 
         logits_to_keep = completion_ids.size(1)  # we only need to compute the logits for the completion tokens
-        print("logits_to_keep:", logits_to_keep)
 
         # Decode the generated completions
         completions_text = self.processing_class.batch_decode(completion_ids, skip_special_tokens=True)
@@ -1030,7 +1024,6 @@ class GRPOAhaTrainer(Trainer):
                     
                     new_prompt_length = new_prompt_ids.size(1)
                     new_completion_ids = new_prompt_completion_ids[:, new_prompt_length:]
-                    print("#####new_completion_ids:", new_completion_ids.shape)
 
                     new_completions_text = self.processing_class.batch_decode(new_completion_ids, skip_special_tokens=True)
 
@@ -1042,16 +1035,12 @@ class GRPOAhaTrainer(Trainer):
                     new_prompts_text_ids = self.processing_class(prompts_text, return_tensors="pt", padding=True, padding_side="right", add_special_tokens=False).to(device)
                     prompt_completion_ids, attention_mask = new_prompts_text_ids["input_ids"], new_prompts_text_ids["attention_mask"]
                     completion_ids = prompt_completion_ids[:, prompt_length:] #[num_generations, max_completion_lengths]
-                    print("prompt_completion_ids:",prompt_completion_ids.shape)
-                    print("attention_mask:",attention_mask.shape)
-                    print("###completion_ids:",completion_ids.shape)
 
                     is_eos = completion_ids == self.processing_class.eos_token_id
                     eos_idx = torch.full((is_eos.size(0),), is_eos.size(1), dtype=torch.long, device=device)
                     eos_idx[is_eos.any(dim=1)] = is_eos.int().argmax(dim=1)[is_eos.any(dim=1)]
                     sequence_indices = torch.arange(is_eos.size(1), device=device).expand(is_eos.size(0), -1)
                     completion_mask = (sequence_indices <= eos_idx.unsqueeze(1)).int()
-                    print("new_completion_mask:",completion_mask.shape)
 
                     completion_ids_list = [
                         [id.item() for id, m in zip(row, mask_row) if m] 
@@ -1059,7 +1048,6 @@ class GRPOAhaTrainer(Trainer):
                     
                     completion_lengths = completion_mask.sum(1)  #list: 8 * completion_lengths
                     logits_to_keep = completion_ids.size(1)  # we only need to compute the logits for the completion tokens
-                    print("##logits_to_keep:", logits_to_keep)
                 
                     if is_conversational(inputs[0]):
                         completions = []
@@ -1071,7 +1059,6 @@ class GRPOAhaTrainer(Trainer):
                     
         rewards_per_func = self._calculate_rewards(inputs, prompts, completions, completion_ids_list)
         rewards = (rewards_per_func * self.reward_weights.to(device).unsqueeze(0)).nansum(dim=1)
-        print("New rewards after regeneration:", rewards)
 
         ###########################################################################
 
@@ -1225,15 +1212,11 @@ class GRPOAhaTrainer(Trainer):
         logits_to_keep = completion_ids.size(1)  # we only need to compute the logits for the completion tokens
 
         mode = "train" if self.model.training else "eval"
-        
         per_token_logps, per_entropy = self._get_per_token_logps(model, input_ids, attention_mask, logits_to_keep, EDA=True)
-        print("_compute_loss per_token_logps:",per_token_logps.shape)
-        print("per_entropy.requires_grad:",per_entropy.requires_grad)
+
 
         per_entropy_mean = torch.mean(per_entropy, dim=1)
-        print("per_entropy_mean:",per_entropy_mean)
         all_entropy_mean = self.accelerator.gather(per_entropy_mean).detach()
-        print("all_entropy_mean:",all_entropy_mean)
         self._metrics[mode]["entropy_mean"].append(torch.mean(all_entropy_mean, dim=0).item())
 
         # Compute the KL divergence between the model and the reference model
