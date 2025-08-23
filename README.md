@@ -100,14 +100,11 @@ This figure compares the training dynamics of three methods—Vanilla GRPO, GRPO
 
 If you find our work interesting and helpful, please consider giving our repo a star. Additionally, if you would like to cite our work, please use the following format:
 ```bibtex
-@misc{zhang2025edgegrpoentropydrivengrpoguided,
-      title={EDGE-GRPO: Entropy-Driven GRPO with Guided Error Correction for Advantage Diversity}, 
-      author={Xingjian Zhang and Siwei Wen and Wenjun Wu and Lei Huang},
-      year={2025},
-      eprint={2507.21848},
-      archivePrefix={arXiv},
-      primaryClass={cs.AI},
-      url={https://arxiv.org/abs/2507.21848}, 
+@article{zhang2025edge,
+  title={EDGE-GRPO: Entropy-Driven GRPO with Guided Error Correction for Advantage Diversity},
+  author={Zhang, Xingjian and Wen, Siwei and Wu, Wenjun and Huang, Lei},
+  journal={arXiv preprint arXiv:2507.21848},
+  year={2025}
 }
 ```
 
